@@ -21,7 +21,7 @@
   (lambda (x)
     (eternity x)))
 
-       
+
 
 (define C
   (lambda (n)
@@ -70,14 +70,14 @@
 
 ;; page 161
 (define length<=1
-(lambda (l)
-  (cond
-    ((null? l) 0)
-    (else
-     (add1 ((lambda (l)
-             (cond
-               ((null? l) 0)
-               (else (add1 (eternity (cdr l)))))) (cdr l)))))))
+  (lambda (l)
+    (cond
+      ((null? l) 0)
+      (else
+       (add1 ((lambda (l)
+                (cond
+                  ((null? l) 0)
+                  (else (add1 (eternity (cdr l)))))) (cdr l)))))))
 
 
 (p (length<=1 '(1)))
@@ -92,11 +92,11 @@
            (cond 
              ((null? l) 0)
              (else (add1
-                   ((lambda (l)
-                      (cond
-                        ((null? l) 0)
-                        (else (add1 (eternity (cdr l)))))) 
-                    (cdr l)))))) 
+                    ((lambda (l)
+                       (cond
+                         ((null? l) 0)
+                         (else (add1 (eternity (cdr l)))))) 
+                     (cdr l)))))) 
          (cdr l)))))))
 
 (p (length<=2 '(1 2)))
@@ -117,41 +117,40 @@
     (cond 
       ((null? l) 0)
       (else (add1 (f (cdr l))))))
-    
-    ((lambda (g)
-       (lambda (l)
-         (cond
-           ((null? l) 0)
-           (else (add1 (g (cdr l))))))) eternity))
-              
+  
+  ((lambda (g)
+     (lambda (l)
+       (cond
+         ((null? l) 0)
+         (else (add1 (g (cdr l))))))) eternity))
+
 
 ;; length <=2
 (define len<=2 
-((lambda (remain-length)
-  (lambda (l)
-    (cond
-      ((null? l) 0)
-      (else (add1 (remain-length (cdr l)))))))
-
- (
-  (lambda (remain-length)
-   (lambda (l)
-     (cond
-       ((null? l) 0)
-       (else (add1 (remain-length (cdr l)))))))
-  
-  (lambda(l)
-    (cond
-      ((null? l) 0)
-      (else (eternity (cdr l))))))
-))
+  ((lambda (remain-length)
+     (lambda (l)
+       (cond
+         ((null? l) 0)
+         (else (add1 (remain-length (cdr l)))))))
+   
+   ((lambda (remain-length)
+      (lambda (l)
+        (cond
+          ((null? l) 0)
+          (else (add1 (remain-length (cdr l)))))))
+    
+    (lambda(l)
+      (cond
+        ((null? l) 0)
+        (else (eternity (cdr l))))))
+   ))
 
 (p (len<=2 '(1 2)))
-   
+
 
 ;; length0
 ((lambda (mk-length)
-  (mk-length eternity))
+   (mk-length eternity))
  (lambda (length)
    (lambda (l)
      (cond
@@ -169,7 +168,7 @@
 
 ;; length<=2
 ((lambda (mk-length)
-  (mk-length (mk-length (mk-length eternity))))
+   (mk-length (mk-length (mk-length eternity))))
  (lambda (length)
    (lambda (l)
      (cond
@@ -178,26 +177,26 @@
 
 ;; length<=3
 (define length<=3
-
-(
-(lambda (mk-length)
-  (mk-length (mk-length (mk-length (mk-length eternity)))))
-
-(lambda (length)
-  (lambda (l)
-    (cond
-      ((null? l) 0)
-      (else (add1 (length (cdr l)))))))
-
-)
-)
+  
+  (
+   (lambda (mk-length)
+     (mk-length (mk-length (mk-length (mk-length eternity)))))
+   
+   (lambda (length)
+     (lambda (l)
+       (cond
+         ((null? l) 0)
+         (else (add1 (length (cdr l)))))))
+   
+   )
+  )
 
 (p (length<=3 '(1 2 4)))
 
 
-                        
+
 (((lambda (mk-length)
-   (mk-length mk-length))
+    (mk-length mk-length))
   
   (lambda (mk-length)
     (lambda (l)
@@ -206,7 +205,59 @@
         (else (add1 ((mk-length mk-length) (cdr l)))))))) '(apples and this is items))
 
 
- 
+
+;; better version
+((lambda (mk-length)
+   (mk-length mk-length))
+ (lambda (mk-length)
+   ((lambda (length)
+      (lambda (l)
+        (cond 
+          ((null? l) 0)
+          (else (add1 (length (cdr l))))))) (mk-length mk-length))))
 
 
 
+;; length
+((lambda (mk-length)
+   (mk-length mk-length))
+ ;; param for above function
+ (lambda (mk-length) ;; arguments is self
+   (lambda (l)
+     (cond 
+       ((null? l) 0)
+       (else (add1 ((mk-length mk-length) (cdr l))))))))
+
+;; extract the (mk-length mk-length) to param
+
+((lambda (mk-length)
+   (mk-length mk-length)
+   (lambda (mk-length)
+     (
+      (lambda (length)
+        (lambda (l)
+          (cond
+            ((null? l) 0)
+            (else (add1 (length (cdr l)))))))
+      (lambda (x)
+        ((mk-length mk-length) x))))))
+
+
+((lambda (le)
+   ((lambda (mk-length)
+      (mk-length mk-length))
+    (lambda (mk-length)
+      (le (lambda (x)
+            ((mk-length mk-length) x))))))
+ (lambda (length)
+   (lambda (l )
+     (cond
+       ((null? l) 0)
+       (else (add1 (length (cdr l))))))))
+
+
+(define Y
+  (lambda (le)
+    ((lambda (f) (f f))
+     (lambda (f)
+       (le (lambda (x) ( (f f) x)))))))
