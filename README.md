@@ -1,7 +1,8 @@
 (define Y
   (lambda (le)
     ((lambda (f) (f f))
-    (lambda (x) (le ((f f) x))))))
+    (le (lambda (x) ((f f) x))))))
+    
     
 (define le (lambda (length)
   (lambda (l)
