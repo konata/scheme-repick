@@ -149,4 +149,64 @@
 (p (len<=2 '(1 2)))
    
 
+;; length0
+((lambda (mk-length)
+  (mk-length eternity))
+ (lambda (length)
+   (lambda (l)
+     (cond
+       ((null? l) 0)
+       (else (add1 (length (cdr l))))))))
+
+;; length<=1
+((lambda (mk-length)
+   (mk-length (mk-length eternity)))
+ (lambda (length)
+   (lambda (l)
+     (cond
+       ((null? l) 0)
+       (else (add1 (length (cdr l))))))))
+
+;; length<=2
+((lambda (mk-length)
+  (mk-length (mk-length (mk-length eternity))))
+ (lambda (length)
+   (lambda (l)
+     (cond
+       ((null? l) 0)
+       (else (add1 (length (cdr l))))))))
+
+;; length<=3
+(define length<=3
+
+(
+(lambda (mk-length)
+  (mk-length (mk-length (mk-length (mk-length eternity)))))
+
+(lambda (length)
+  (lambda (l)
+    (cond
+      ((null? l) 0)
+      (else (add1 (length (cdr l)))))))
+
+)
+)
+
+(p (length<=3 '(1 2 4)))
+
+
+                        
+(((lambda (mk-length)
+   (mk-length mk-length))
+  
+  (lambda (mk-length)
+    (lambda (l)
+      (cond
+        ((null? l) 0)
+        (else (add1 ((mk-length mk-length) (cdr l)))))))) '(apples and this is items))
+
+
+ 
+
+
 
